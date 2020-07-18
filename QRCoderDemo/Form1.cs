@@ -41,8 +41,7 @@ namespace QRCoderDemo
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
 
-                        pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White,
-                            GetIconBitmap(), (int) iconSize.Value);
+                        pictureBoxQRCode.BackgroundImage = BytesToImage(QRCodeHelper.BitmapToBytes(qrCode.GetModernGraphic(20, Color.Black, Color.White), null));
 
                          this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
                         //Set the SizeMode to center the image.
@@ -52,6 +51,12 @@ namespace QRCoderDemo
                     }
                 }
             }
+        }
+
+        private Image BytesToImage(byte[] bytes)
+        {
+            using (var ms = new MemoryStream(bytes))
+                return Image.FromStream(ms);
         }
 
         private Bitmap GetIconBitmap()

@@ -67,23 +67,18 @@ namespace QRCoder
                 for (var x = 0; x < matrixSize; x++)
                 {
                     if (modules[x])
-                    {
                         continue;
-                    }
 
                     var pixelIndex = x * pixelsPerModule;
                     var endIndex = pixelIndex + pixelsPerModule;
+
                     for (; pixelIndex < endIndex; pixelIndex++)
-                    {
                         scanlines[scanlineOffset + 1 + pixelIndex / 8] |= (byte)(0x80 >> (pixelIndex % 8));
-                    }
                 }
 
                 // Copy the scanline required number of times.
                 for (var copyCount = 1; copyCount < pixelsPerModule; copyCount++)
-                {
                     Array.Copy(scanlines, scanlineOffset, scanlines, scanlineOffset + copyCount * bytesPerScanline, bytesPerScanline);
-                }
             }
 
             return scanlines;
