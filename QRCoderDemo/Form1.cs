@@ -40,8 +40,10 @@ namespace QRCoderDemo
                 {
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
+                        Bitmap bitmap = qrCode.GetModernGraphic(20, Color.Black, Color.White);
+                        bitmap = QRCodeHelper.AddTextToBottom(bitmap, "You can go to Scanbox.app to scan");
 
-                        pictureBoxQRCode.BackgroundImage = BytesToImage(QRCodeHelper.BitmapToBytes(qrCode.GetModernGraphic(20, Color.Black, Color.White), null));
+                        pictureBoxQRCode.BackgroundImage = BytesToImage(QRCodeHelper.BitmapToBytes(bitmap, null));
 
                          this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
                         //Set the SizeMode to center the image.

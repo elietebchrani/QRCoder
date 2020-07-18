@@ -349,15 +349,31 @@ namespace QRCoder
             return ToBytes(bitmap);
         }
 
-        private static byte[] ToBytes(this Image image, ImageFormat format)
+        public static Bitmap AddTextToBottom(Bitmap bitmap, string text)
         {
-            using (var stream = new MemoryStream())
-            {
-                image.Save(stream, format);
-                stream.Position = 0;
+            int textHeight = 40;
+            int totalWidth = bitmap.Width + textHeight;
+            int totalHeight = bitmap.Height + textHeight;
 
-                return ToBytes(stream);
+            StringFormat format = new StringFormat();
+            format.LineAlignment = StringAlignment.Center;
+            format.Alignment = StringAlignment.Center;
+
+            Bitmap result = new Bitmap(totalWidth, totalHeight);
+
+            using (Graphics graphics = Graphics.FromImage(result))
+            {
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.FillRectangle(Brushes.White, 0, 0, totalWidth, totalHeight);
+                graphics.DrawImage(bitmap, new Point(textHeight / 2, 0));
+
+                graphics.DrawString(text, new Font("Arial", 20), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, textHeight), format);
+                graphics.Flush();
             }
+
+            return result;
         }
 
         private static byte[] ToBytes(this Bitmap bitmap)
