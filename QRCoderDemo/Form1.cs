@@ -41,7 +41,7 @@ namespace QRCoderDemo
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
                         Bitmap bitmap = qrCode.GetModernGraphic(20, Color.Black, Color.White);
-                        bitmap = QRCodeHelper.AddTextToBottom(bitmap, "You can go to Scanbox.app to scan");
+                        bitmap = QRCodeHelper.AddTextToBottom(bitmap, "You can go to www.Scanbox.app to scan");
 
                         pictureBoxQRCode.BackgroundImage = BytesToImage(QRCodeHelper.BitmapToBytes(bitmap, null));
 

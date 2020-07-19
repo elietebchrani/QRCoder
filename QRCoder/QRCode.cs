@@ -351,7 +351,8 @@ namespace QRCoder
 
         public static Bitmap AddTextToBottom(Bitmap bitmap, string text)
         {
-            int textHeight = 40;
+            int textHeight = bitmap.Height / 16;
+            int fontSize = bitmap.Height / 40;
             int totalWidth = bitmap.Width + textHeight;
             int totalHeight = bitmap.Height + textHeight;
 
@@ -369,7 +370,7 @@ namespace QRCoder
                 graphics.FillRectangle(Brushes.White, 0, 0, totalWidth, totalHeight);
                 graphics.DrawImage(bitmap, new Point(textHeight / 2, 0));
 
-                graphics.DrawString(text, new Font("Arial", 20), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, textHeight), format);
+                graphics.DrawString(text, new Font("Arial", fontSize), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, textHeight), format);
                 graphics.Flush();
             }
 
