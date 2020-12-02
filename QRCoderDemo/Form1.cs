@@ -41,7 +41,14 @@ namespace QRCoderDemo
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
                         Bitmap bitmap = qrCode.GetModernGraphic(20, Color.Black, Color.White);
-                        bitmap = QRCodeHelper.AddTextToBottom(bitmap, "You can go to www.Scanbox.app to scan");
+
+                        //bitmap = QRCodeHelper.AddTextToBottom(bitmap, "<b>portal.coverboxfnb.com</b>\n\nyou can go to www.Scanbox.app\non your phone to scan this QR Code");
+
+                        //bitmap = QRCodeHelper.AddTextToBottom(bitmap, "you can go to www.scanbox.app\non your phone to scan this QR Code", textBoxQRCode.Text);
+                        textBoxQRCode.Text = textBoxQRCode.Text.Replace("https://", string.Empty);
+                        textBoxQRCode.Text = textBoxQRCode.Text.Trim(new char[] { ' ', '/' });
+
+                        bitmap = QRCodeHelper.AddTextToBottom(bitmap, "Open www.scanbox.app to scan this QR code", textBoxQRCode.Text);
 
                         pictureBoxQRCode.BackgroundImage = BytesToImage(QRCodeHelper.BitmapToBytes(bitmap, null));
 

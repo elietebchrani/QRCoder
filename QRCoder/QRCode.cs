@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder
@@ -136,7 +137,7 @@ namespace QRCoder
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
 
-            var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmp = new Bitmap(size, size, PixelFormat.Format32bppArgb);
 
             using (var gfx = Graphics.FromImage(bmp))
             using (var lightBrush = new SolidBrush(lightColor))
@@ -349,16 +350,24 @@ namespace QRCoder
             return ToBytes(bitmap);
         }
 
-        public static Bitmap AddTextToBottom(Bitmap bitmap, string text)
+        public static Bitmap AddTextToBottom(Bitmap bitmap, string message, string displayLink)
         {
-            int textHeight = bitmap.Height / 16;
+            int singleLineHeight = bitmap.Height / 16;
+            int messageLines = message.Count(key => key == '\n');
+            int textHeight = singleLineHeight * messageLines + (int)(singleLineHeight * 1.5);
+
+            if (!string.IsNullOrEmpty(displayLink))
+                textHeight += singleLineHeight;
+
             int fontSize = bitmap.Height / 40;
             int totalWidth = bitmap.Width + textHeight;
             int totalHeight = bitmap.Height + textHeight;
 
-            StringFormat format = new StringFormat();
-            format.LineAlignment = StringAlignment.Center;
-            format.Alignment = StringAlignment.Center;
+            StringFormat format = new StringFormat
+            {
+                LineAlignment = StringAlignment.Center,
+                Alignment = StringAlignment.Center
+            };
 
             Bitmap result = new Bitmap(totalWidth, totalHeight);
 
@@ -370,7 +379,14 @@ namespace QRCoder
                 graphics.FillRectangle(Brushes.White, 0, 0, totalWidth, totalHeight);
                 graphics.DrawImage(bitmap, new Point(textHeight / 2, 0));
 
-                graphics.DrawString(text, new Font("Arial", fontSize), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, textHeight), format);
+                if (!string.IsNullOrEmpty(displayLink))
+                {
+                    graphics.DrawString(displayLink, new Font("Arial", fontSize, FontStyle.Bold), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, singleLineHeight), format);
+                    graphics.DrawString($"{message}", new Font("Arial", fontSize), Brushes.Black, new RectangleF(0, bitmap.Height + (int)(singleLineHeight * 1.5), totalWidth, messageLines * singleLineHeight), format);
+                }
+                else
+                    graphics.DrawString(message, new Font("Arial", fontSize), Brushes.Black, new RectangleF(0, bitmap.Height, totalWidth, textHeight), format);
+
                 graphics.Flush();
             }
 
